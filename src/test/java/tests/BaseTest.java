@@ -19,41 +19,48 @@ public class BaseTest {
     @Before
     public void setUp() {
 
-        // Setup ChromeDriver automatically
+        // Setup driver
         WebDriverManager.chromedriver().setup();
 
-        // Headless mode for GitHub Actions
+        // Headless for GitHub Actions
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new"); // important for latest Chrome
+        options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
 
         driver = new ChromeDriver(options);
 
-        driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        driver.manage().window().maximize();
 
         driver.get("https://the-internet.herokuapp.com/login");
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() {
 
-        takeScreenshot("screenshot");
+        try {
+            takeScreenshot();
+        } catch (Exception e) {
+            System.out.println("Screenshot failed: " + e.getMessage());
+        }
 
         if (driver != null) {
             driver.quit();
         }
     }
 
-    // Reusable Screenshot Method
-    public void takeScreenshot(String fileName) throws IOException {
+    // Simple Screenshot Method (Auto name)
+    public void takeScreenshot() throws IOException {
+
         File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-        File dest = new File("screenshots/" + fileName + ".png");
+        // Unique name using time
+        String fileName = "screenshot_" + System.currentTimeMillis() + ".png";
 
-        // Create folder if not exists
-        dest.getParentFile().mkdirs();
+        File dest = new File("screenshots/" + fileName);
+
+        dest.getParentFile().mkdirs(); // create folder
 
         FileUtils.copyFile(src, dest);
     }

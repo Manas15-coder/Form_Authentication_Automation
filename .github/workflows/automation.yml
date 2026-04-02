@@ -27,3 +27,10 @@ jobs:
     - name: Run tests
       run: |
         ./gradlew clean test
+
+    - name: Upload Screenshots
+      uses: actions/upload-artifact@v2
+      with:
+        name: screenshots
+        path: screenshots
+      if: always()
