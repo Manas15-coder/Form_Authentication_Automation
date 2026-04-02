@@ -8,6 +8,7 @@ public class LoginPage extends BasePage{
     private By username = By.id("username");
     private By password = By.id("password");
     private By loginBtn = By.cssSelector("button[type='submit']");
+    private By message = By.id("flash");
 
     public LoginPage(WebDriver driver){
         super(driver);
@@ -16,5 +17,9 @@ public class LoginPage extends BasePage{
         type(username,user);
         type(password,pass);
         click(loginBtn);
+    }
+
+    public String getMessage(){
+        return getText(message);
     }
 }
